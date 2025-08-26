@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uprise Data | Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            purple: {
+              350: '#a855f7',
+              450: '#9333ea',
+              550: '#7e22ce',
+              650: '#6b21a8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      width: 100%;
+      max-width: 420px;
+      margin: 20px auto;
+    }
+    
+    .navbar {
+      background: white;
+      border-radius: 0 0 1rem 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+    
+    .nav-item.active {
+      color: #7e22ce;
+      font-weight: 600;
+      border-bottom: 3px solid #7e22ce;
+    }
+    
+    .nav-item:hover {
+      background-color: #faf5ff;
+    }
+    
+    .page {
+      padding: 80px 20px 20px;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 100vh;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <div class="navbar flex justify-around items-center">
+    <div class="nav-item active">
+      <i class="fas fa-home"></i>
+      <span class="hidden md:inline ml-1">Home</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='buy-data.html'">
+      <i class="fas fa-wifi"></i>
+      <span class="hidden md:inline ml-1">Buy Data</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='deposit.html'">
+      <i class="fas fa-money-bill-wave"></i>
+      <span class="hidden md:inline ml-1">Deposit</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='account.html'">
+      <i class="fas fa-user"></i>
+      <span class="hidden md:inline ml-1">Account</span>
+    </div>
+  </div>
+
+  <!-- Home Page Content -->
+  <div class="page">
+    <div class="card">
+      <div class="p-8">
+        <div class="flex items-center justify-center mb-6">
+          <i class="fas fa-sim-card text-purple-650 text-4xl mr-3"></i>
+          <h1 class="text-2xl font-bold text-purple-650">Uprise Data</h1>
+        </div>
+        
+        <p class="text-center text-gray-600 mb-8">
+          Welcome to Uprise Data! Get affordable data plans for all networks instantly.
+        </p>
+        
+        <div class="bg-purple-50 p-4 rounded-lg mb-6">
+          <h3 class="font-semibold text-purple-650 mb-2 flex items-center">
+            <i class="fas fa-fire mr-2"></i> Hot Deals
+          </h3>
+          <ul class="list-disc list-inside text-purple-600">
+            <li>MTN 10GB for ₦1700 (2 weeks)</li>
+            <li>Airtel 5GB for ₦1350 (1 month)</li>
+            <li>Glo 10GB for ₦1500 (1 month)</li>
+            <li>9mobile 5GB for ₦1100 (1 month)</li>
+          </ul>
+        </div>
+        
+        <div class="bg-green-50 p-4 rounded-lg mb-6">
+          <h3 class="font-semibold text-green-700 mb-2 flex items-center">
+            <i class="fas fa-bolt mr-2"></i> Why Choose Us
+          </h3>
+          <ul class="list-disc list-inside text-green-600">
+            <li>Instant delivery</li>
+            <li>24/7 customer support</li>
+            <li>Best prices in Nigeria</li>
+          </ul>
+        </div>
+        
+        <button onclick="window.location.href='buy-data.html'" class="bg-purple-650 text-white px-4 py-3 rounded-lg w-full hover:bg-purple-700 transition-all duration-300 shadow-lg shadow-purple-350/40 hover:shadow-purple-450/40 mb-4">
+          <i class="fas fa-wifi mr-2"></i> Buy Data Now
+        </button>
+        
+        <button onclick="window.location.href='deposit.html'" class="bg-green-600 text-white px-4 py-3 rounded-lg w-full hover:bg-green-700 transition-all duration-300 shadow-lg shadow-green-400/40 hover:shadow-green-500/40">
+          <i class="fas fa-money-bill-wave mr-2"></i> Deposit Funds
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

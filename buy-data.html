@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>comnect-verse | Buy Data</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            purple: {
+              350: '#a855f7',
+              450: '#9333ea',
+              550: '#7e22ce',
+              650: '#6b21a8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      width: 100%;
+      max-width: 420px;
+      margin: 20px auto;
+    }
+    
+    .navbar {
+      background: white;
+      border-radius: 0 0 1rem 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+    
+    .nav-item.active {
+      color: #7e22ce;
+      font-weight: 600;
+      border-bottom: 3px solid #7e22ce;
+    }
+    
+    .nav-item:hover {
+      background-color: #faf5ff;
+    }
+    
+    .page {
+      padding: 80px 20px 20px;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 100vh;
+    }
+    
+    .plan-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid;
+    }
+    
+    .plan-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+    }
+    
+    .network-logo {
+      width: 24px;
+      height: 24px;
+      display: inline-block;
+      margin-right: 8px;
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification.success {
+      background-color: #10b981;
+    }
+    
+    .notification.error {
+      background-color: #ef4444;
+    }
+    
+    /* Animation for plan appearance */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+  </style>
+</head>
+<body>
+  <!-- Notification -->
+  <div id="notification" class="notification hidden">
+    <i class="fas fa-check-circle mr-2"></i>
+    <span id="notification-text"></span>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="navbar flex justify-around items-center">
+    <div class="nav-item" onclick="window.location.href='index.html'">
+      <i class="fas fa-home"></i>
+      <span class="hidden md:inline ml-1">Home</span>
+    </div>
+    <div class="nav-item active">
+      <i class="fas fa-wifi"></i>
+      <span class="hidden md:inline ml-1">Buy Data</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='deposit.html'">
+      <i class="fas fa-money-bill-wave"></i>
+      <span class="hidden md:inline ml-1">Deposit</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='account.html'">
+      <i class="fas fa-user"></i>
+      <span class="hidden md:inline ml-1">Account</span>
+    </div>
+  </div>
+
+  <!-- Buy Data Page Content -->
+  <div class="page">
+    <div class="card">
+      <div class="p-6">
+        <h1 class="text-xl font-bold text-purple-650 mb-6 text-center"><i class="fas fa-wifi mr-2"></i>Buy Data</h1>
+        
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-purple-650 mb-3">Select Network:</label>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="network-option relative">
+              <input type="radio" name="data-network" id="data-airtel" value="Airtel" class="hidden peer" data-network="airtel">
+              <label for="data-airtel" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-purple-550 peer-checked:bg-purple-50 transition-all duration-300">
+                <span class="network-logo bg-[#e21836]"></span>
+                <span class="mt-1 text-sm font-medium">Airtel</span>
+              </label>
+            </div>
+            <div class="network-option relative">
+              <input type="radio" name="data-network" id="data-mtn" value="MTN" class="hidden peer" data-network="mtn">
+              <label for="data-mtn" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-[#ffcc00] peer-checked:bg-yellow-50 transition-all duration-300">
+                <span class="network-logo bg-[#ffcc00]"></span>
+                <span class="mt-1 text-sm font-medium">MTN</span>
+              </label>
+            </div>
+            <div class="network-option relative">
+              <input type="radio" name="data-network" id="data-glo" value="Glo" class="hidden peer" data-network="glo">
+              <label for="data-glo" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-[#00a859] peer-checked:bg-green-50 transition-all duration-300">
+                <span class="network-logo bg-[#00a859]"></span>
+                <span class="mt-1 text-sm font-medium">Glo</span>
+              </label>
+            </div>
+            <div class="network-option relative">
+              <input type="radio" name="data-network" id="data-9mobile" value="9mobile" class="hidden peer" data-network="9mobile">
+              <label for="data-9mobile" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-[#00a95c] peer-checked:bg-green-50 transition-all duration-300">
+                <span class="network-logo bg-[#00a95c]"></span>
+                <span class="mt-1 text-sm font-medium">9mobile</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-purple-650 mb-3">Select Data Plan:</label>
+          <div id="plans-container" class="space-y-3">
+            <p class="text-center text-purple-500 py-4">Select a network to view plans</p>
+          </div>
+        </div>
+        
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-purple-650 mb-1">Phone Number:</label>
+          <div class="flex">
+            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-purple-300 bg-purple-100 text-purple-700 text-sm">
+              +234
+            </span>
+            <input type="tel" id="data-phone" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-purple-300 border focus:ring-2 focus:ring-purple-350 focus:border-purple-350" placeholder="8012345678">
+          </div>
+        </div>
+        
+        <button onclick="purchaseData()" class="bg-purple-650 text-white px-4 py-3 rounded-lg w-full hover:bg-purple-700 transition-all duration-300 shadow-lg shadow-purple-350/40 hover:shadow-purple-450/40">
+          <i class="fas fa-shopping-cart mr-2"></i> Purchase Now
+        </button>
+        
+        <div class="text-center mt-4">
+          <p class="text-sm text-purple-600">Need funds? <a href="deposit.html" class="text-purple-650 font-semibold">Deposit here</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Data plans with different prices for each network
+    const dataPlans = {
+      Airtel: [
+        { id: "10GB-2200", name: "10GB", price: 2200, validity: "30 days", description: "Standard Plan" },
+        { id: "5GB-1350", name: "5GB", price: 1350, validity: "30 days", description: "Value Plan" },
+        { id: "3GB-950", name: "3GB", price: 950, validity: "14 days", description: "Budget Plan" },
+        { id: "1GB-550", name: "1GB", price: 550, validity: "7 days", description: "Weekly Plan" }
+      ],
+      MTN: [
+        { id: "10GB-2400", name: "10GB", price: 2300, validity: "30 days", description: "Standard Plan" },
+        { id: "5GB-1400", name: "5GB", price: 1400, validity: "30 days", description: "Value Plan" },
+        { id: "3GB-1000", name: "3GB", price: 1000, validity: "14 days", description: "Budget Plan" },
+        { id: "1GB-600", name: "1GB", price: 600, validity: "7 days", description: "Weekly Plan" }
+      ],
+      Glo: [
+        { id: "10GB-1500", name: "10GB", price: 1500, validity: "30 days", description: "Monthly Plan" },
+        { id: "5GB-1050", name: "5GB", price: 1050, validity: "30 days", description: "Value Plan" },
+        { id: "3GB-700", name: "3GB", price: 700, validity: "7 days", description: "Weekly Plan" },
+        { id: "1GB-300", name: "1GB", price: 350, validity: "7 days", description: "Budget Plan" }
+      ],
+      "9mobile": [
+        { id: "10GB-1500", name: "10GB", price: 1500, validity: "30 days", description: "Monthly Plan" },
+        { id: "5GB-1100", name: "5GB", price: 1100, validity: "30 days", description: "Value Plan" },
+        { id: "3GB-750", name: "3GB", price: 750, validity: "7 days", description: "Weekly Plan" },
+        { id: "1GB-350", name: "1GB", price: 400, validity: "7 days", description: "Budget Plan" }
+      ]
+    };
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+      // Setup network selection for data purchase
+      const networkRadios = document.querySelectorAll('input[name="data-network"]');
+      networkRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (this.checked) {
+            const selectedNetwork = this.value;
+            updateDataPlans(selectedNetwork);
+          }
+        });
+      });
+      
+      // Auto-select the first network by default
+      document.getElementById('data-airtel').checked = true;
+      updateDataPlans('Airtel');
+    });
+
+    function updateDataPlans(network) {
+      const plansContainer = document.getElementById('plans-container');
+      const plans = dataPlans[network] || [];
+      
+      if (plans.length === 0) {
+        plansContainer.innerHTML = '<p class="text-center text-purple-500 py-4">No plans available for this network</p>';
+        return;
+      }
+      
+      let plansHTML = '';
+      plans.forEach((plan, index) => {
+        let borderColor = 'border-purple-450';
+        let bgColor = 'bg-purple-50';
+        
+        // Different colors for different networks
+        if (network === 'MTN') {
+          borderColor = 'border-yellow-400';
+          bgColor = 'bg-yellow-50';
+        } else if (network === 'Glo') {
+          borderColor = 'border-green-500';
+          bgColor = 'bg-green-50';
+        } else if (network === '9mobile') {
+          borderColor = 'border-green-600';
+          bgColor = 'bg-green-50';
+        }
+        
+        plansHTML += `
+          <div class="plan-option fade-in" style="animation-delay: ${index * 0.1}s">
+            <input type="radio" name="data-plan" id="${plan.id}" value="${plan.id}" class="hidden peer">
+            <label for="${plan.id}" class="plan-card block p-4 border border-purple-200 rounded-lg cursor-pointer peer-checked:${borderColor} peer-checked:ring-2 peer-checked:ring-purple-350 peer-checked:${bgColor}">
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="font-bold text-lg text-purple-650">${plan.name}</span>
+                  <span class="text-sm text-purple-600 ml-2">${plan.description}</span>
+                </div>
+                <span class="font-bold text-purple-650">₦${plan.price.toLocaleString()}</span>
+              </div>
+              <div class="text-sm text-purple-500 mt-1">Validity: ${plan.validity}</div>
+            </label>
+          </div>
+        `;
+      });
+      
+      plansContainer.innerHTML = plansHTML;
+    }
+
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      const notificationText = document.getElementById('notification-text');
+      
+      notificationText.textContent = message;
+      notification.className = `notification ${type} show`;
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    function purchaseData() {
+      const network = document.querySelector('input[name="data-network"]:checked');
+      const plan = document.querySelector('input[name="data-plan"]:checked');
+      const phone = document.getElementById('data-phone').value.trim();
+      
+      if (!network || !plan || !phone) {
+        showNotification('Please select network, plan and enter phone number', 'error');
+        return;
+      }
+      
+      // Validate phone number format
+      if (!/^[0-9]{10}$/.test(phone)) {
+        showNotification('Please enter a valid 10-digit phone number', 'error');
+        return;
+      }
+      
+      const [gb, priceStr] = plan.value.split("-");
+      const price = parseInt(priceStr);
+      
+      // Show success message
+      showNotification(`Your ${gb} ${network.value} data plan for ${phone} is being processed!`, 'success');
+      
+      // Reset form after successful purchase
+      setTimeout(() => {
+        document.querySelector('input[name="data-plan"]:checked').checked = false;
+        document.getElementById('data-phone').value = '';
+      }, 2000);
+    }
+  </script>
+</body>
+            </html>

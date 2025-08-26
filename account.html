@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uprise Data | Account</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            purple: {
+              350: '#a855f7',
+              450: '#9333ea',
+              550: '#7e22ce',
+              650: '#6b21a8',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      width: 100%;
+      max-width: 420px;
+      margin: 20px auto;
+    }
+    
+    .navbar {
+      background: white;
+      border-radius: 0 0 1rem 1rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      z-index: 100;
+    }
+    
+    .nav-item {
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      flex: 1;
+    }
+    
+    .nav-item.active {
+      color: #7e22ce;
+      font-weight: 600;
+      border-bottom: 3px solid #7e22ce;
+    }
+    
+    .nav-item:hover {
+      background-color: #faf5ff;
+    }
+    
+    .page {
+      padding: 80px 20px 20px;
+      width: 100%;
+      box-sizing: border-box;
+      min-height: 100vh;
+    }
+    
+    .switch-form {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #e9d5ff;
+    }
+
+    .switch-form a {
+      color: #7e22ce;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .switch-form a:hover {
+      text-decoration: underline;
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .notification.show {
+      transform: translateX(0);
+    }
+    
+    .notification.success {
+      background-color: #10b981;
+    }
+    
+    .notification.error {
+      background-color: #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <!-- Notification -->
+  <div id="notification" class="notification hidden">
+    <i class="fas fa-check-circle mr-2"></i>
+    <span id="notification-text"></span>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="navbar flex justify-around items-center">
+    <div class="nav-item" onclick="window.location.href='index.html'">
+      <i class="fas fa-home"></i>
+      <span class="hidden md:inline ml-1">Home</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='buy-data.html'">
+      <i class="fas fa-wifi"></i>
+      <span class="hidden md:inline ml-1">Buy Data</span>
+    </div>
+    <div class="nav-item" onclick="window.location.href='deposit.html'">
+      <i class="fas fa-money-bill-wave"></i>
+      <span class="hidden md:inline ml-1">Deposit</span>
+    </div>
+    <div class="nav-item active">
+      <i class="fas fa-user"></i>
+      <span class="hidden md:inline ml-1">Account</span>
+    </div>
+  </div>
+
+  <!-- Account Page Content -->
+  <div class="page">
+    <div class="card">
+      <div class="p-6">
+        <h1 class="text-xl font-bold text-purple-650 mb-6 text-center"><i class="fas fa-user mr-2"></i>My Account</h1>
+        
+        <div id="auth-card">
+          <!-- Signup Form (shown first by default) -->
+          <div id="signup-form">
+            <h2 class="text-xl font-bold text-purple-650 mb-6 text-center">Create Account</h2>
+            
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-purple-650 mb-1">Full Name</label>
+              <input type="text" id="signup-name" class="w-full px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-350 focus:border-purple-350" placeholder="Enter your full name">
+            </div>
+            
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-purple-650 mb-1">Phone Number</label>
+              <div class="flex">
+                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-purple-300 bg-purple-100 text-purple-700 text-sm">
+                  +234
+                </span>
+                <input type="tel" id="signup-phone" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-purple-300 border focus:ring-2 focus:ring-purple-350 focus:border-purple-350" placeholder="8012345678">
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-purple-650 mb-1">Password</label>
+              <input type="password" id="signup-password" class="w-full px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-350 focus:border-purple-350" placeholder="Create a password">
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-purple-650 mb-1">Confirm Password</label>
+              <input type="password" id="signup-confirm" class="w-full px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-350 focus:border-purple-350" placeholder="Confirm your password">
+            </div>
+            
+            <button onclick="signup()" class="bg-purple-650 text-white px-4 py-3 rounded-lg w-full hover:bg-purple-700 transition-all duration-300 shadow-lg shadow-purple-350/40 hover:shadow-purple-450/40">
+              Create Account <i class="fas fa-user-plus ml-2"></i>
+            </button>
+
+            <div class="switch-form">
+              <p>Already have an account? <a onclick="showLogin()">Login here</a></p>
+            </div>
+          </div>
+          
+          <!-- Login Form (hidden initially) -->
+          <div id="login-form" class="hidden">
+            <h2 class="text-xl font-bold text-purple-650 mb-6 text-center">Welcome Back</h2>
+            
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-purple-650 mb-1">Phone Number</label>
+              <div class="flex">
+                <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-purple-300 bg-purple-100 text-purple-700 text-sm">
+                  +234
+                </span>
+                <input type="tel" id="login-phone" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-purple-300 border focus:ring-2 focus:ring-purple-350 focus:border-purple-350" placeholder="8012345678">
+              </div>
+            </div>
+            
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-purple-650 mb-1">Password</label>
+              <input type="password" id="login-password" class="w-full px-3 py-2 border border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-350 focus:border-purple-350" placeholder="Enter your password">
+            </div>
+            
+            <button onclick="login()" class="bg-purple-650 text-white px-4 py-3 rounded-lg w-full hover:bg-purple-700 transition-all duration-300 shadow-lg shadow-purple-350/40 hover:shadow-purple-450/40">
+              Login <i class="fas fa-sign-in-alt ml-2"></i>
+            </button>
+
+            <div class="switch-form">
+              <p>Don't have an account? <a onclick="showSignup()">Sign up here</a></p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- User Dashboard (hidden initially) -->
+        <div id="user-dashboard" class="hidden">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-lg font-bold text-purple-650" id="user-name">User Name</h2>
+              <p class="text-sm text-purple-600" id="user-id">Phone: 08012345678</p>
+            </div>
+            <button onclick="logout()" class="bg-purple-650 text-white px-3 py-1 rounded-lg text-sm hover:bg-purple-700">
+              Logout
+            </button>
+          </div>
+          
+          <div class="bg-purple-50 p-4 rounded-lg mb-6">
+            <h3 class="font-semibold text-purple-650 mb-2">Account Balance</h3>
+            <p class="text-2xl font-bold text-purple-650" id="dashboard-balance">₦0.00</p>
+          </div>
+          
+          <div class="mb-6">
+            <h3 class="font-semibold text-purple-650 mb-3">Recent Transactions</h3>
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <p class="text-center text-gray-500" id="no-transactions">No transactions yet</p>
+              <div id="transaction-list" class="hidden">
+                <!-- Transactions will be listed here -->
+              </div>
+            </div>
+          </div>
+          
+          <button onclick="window.location.href='buy-data.html'" class="bg-purple-650 text-white px-4 py-2 rounded-lg w-full hover:bg-purple-700 transition-all mb-3">
+            <i class="fas fa-wifi mr-2"></i> Buy Data
+          </button>
+          
+          <button onclick="window.location.href='deposit.html'" class="bg-green-600 text-white px-4 py-2 rounded-lg w-full hover:bg-green-700 transition-all">
+            <i class="fas fa-money-bill-wave mr-2"></i> Deposit Funds
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is already logged in
+      const loggedInUser = localStorage.getItem('loggedIn');
+      if (loggedInUser) {
+        const users = JSON.parse(localStorage.getItem('users') || '{}');
+        if (users[loggedInUser]) {
+          showUserDashboard();
+        }
+      }
+      
+      // Add event listener for Enter key in forms
+      document.getElementById('signup-form').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          signup();
+        }
+      });
+      
+      document.getElementById('login-form').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          login();
+        }
+      });
+    });
+
+    function showLogin() {
+      document.getElementById('signup-form').classList.add('hidden');
+      document.getElementById('login-form').classList.remove('hidden');
+    }
+
+    function showSignup() {
+      document.getElementById('login-form').classList.add('hidden');
+      document.getElementById('signup-form').classList.remove('hidden');
+    }
+
+    function showUserDashboard() {
+      const loggedInUser = localStorage.getItem('loggedIn');
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      
+      document.getElementById('auth-card').classList.add('hidden');
+      document.getElementById('user-dashboard').classList.remove('hidden');
+      
+      if (users[loggedInUser]) {
+        document.getElementById('user-name').textContent = users[loggedInUser].name;
+        document.getElementById('user-id').textContent = `Phone: ${loggedInUser}`;
+        document.getElementById('dashboard-balance').textContent = `₦${users[loggedInUser].balance.toLocaleString()}`;
+        
+        // Show transactions if any
+        if (users[loggedInUser].transactions && users[loggedInUser].transactions.length > 0) {
+          document.getElementById('no-transactions').classList.add('hidden');
+          const transactionList = document.getElementById('transaction-list');
+          transactionList.classList.remove('hidden');
+          transactionList.innerHTML = '';
+          
+          // Show last 3 transactions
+          const recentTransactions = users[loggedInUser].transactions.slice(-3).reverse();
+          recentTransactions.forEach(transaction => {
+            const transactionItem = document.createElement('div');
+            transactionItem.className = 'flex justify-between items-center py-2 border-b border-gray-200';
+            transactionItem.innerHTML = `
+              <div>
+                <span class="font-medium">${transaction.type} - ${transaction.network || ''}</span>
+                <div class="text-xs text-gray-500">${new Date(transaction.date).toLocaleDateString()}</div>
+              </div>
+              <span class="font-bold ${transaction.type === 'deposit' ? 'text-green-600' : 'text-purple-650'}">₦${transaction.amount.toLocaleString()}</span>
+            `;
+            transactionList.appendChild(transactionItem);
+          });
+        } else {
+          document.getElementById('no-transactions').classList.remove('hidden');
+          document.getElementById('transaction-list').classList.add('hidden');
+        }
+      }
+    }
+
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      const notificationText = document.getElementById('notification-text');
+      
+      notificationText.textContent = message;
+      notification.className = `notification ${type} show`;
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    function login() {
+      const phone = document.getElementById('login-phone').value;
+      const password = document.getElementById('login-password').value;
+      
+      if (!phone || !password) {
+        showNotification('Please enter phone number and password', 'error');
+        return;
+      }
+      
+      const users = JSON.parse(localStorage.getItem('users') || '{}');
+      
+      if (!users[phone] || users[phone].password !== password) {
+        showNotification('Invalid phone number or password', 'error');
+        return;
+      }
+      
+      localStorage.setItem('loggedIn', phone);
+      showUserDashboard();
+      showNotification('Login successful!', 'success');
+    }
+
+    function signup() {
+      const name = document.getElementById('signup-name').value;
+      const phone = document.getElementById('signup-phone').value;
+      const password = document.getElementById('signup-password').value;
+      const confirm = document.getElementById('signup-confirm').value;
+      
+      if (!name || !phone || !password || !confirm) {
+        showNotification('Please fill all fields', 'error');
+        return;
+      }
+      
+      if (password !== confirm) {
+        showNotification('Passwords do not match', 'error');
+        return;
+      }
+      
+      if (phone.length < 10) {
+        showNotification('Please enter a valid phone number', 'error');
+        return;
+      }
+      
+      // Initialize users object if it doesn't exist
+      let users = {};
+      try {
+        users = JSON.parse(localStorage.getItem('users')) || {};
+      } catch (e) {
+        users = {};
+      }
+      
+      if (users[phone]) {
+        showNotification('Phone number already registered', 'error');
+        return;
+      }
+      
+      users[phone] = {
+        name: name,
+        password: password,
+        balance: 0,
+        transactions: []
+      };
+      
+      localStorage.setItem('users', JSON.stringify(users));
+      showNotification('Account created successfully! Please login.', 'success');
+      
+      // Clear form fields
+      document.getElementById('signup-name').value = '';
+      document.getElementById('signup-phone').value = '';
+      document.getElementById('signup-password').value = '';
+      document.getElementById('signup-confirm').value = '';
+      
+      // Switch to login form
+      showLogin();
+      document.getElementById('login-phone').value = phone;
+    }
+
+    function logout() {
+      localStorage.removeItem('loggedIn');
+      document.getElementById('user-dashboard').classList.add('hidden');
+      document.getElementById('auth-card').classList.remove('hidden');
+      showSignup();
+      showNotification('Logged out successfully', 'success');
+    }
+  </script>
+</body>
+                </html>
