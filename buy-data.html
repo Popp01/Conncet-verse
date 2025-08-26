@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Uprise Data | Deposit</title>
+  <title>Uprise Data | Buy Data</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -31,10 +31,6 @@
       min-height: 100vh;
       margin: 0;
       padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
     }
     
     .card {
@@ -44,7 +40,7 @@
       overflow: hidden;
       width: 100%;
       max-width: 420px;
-      margin: 20px;
+      margin: 20px auto;
     }
     
     .navbar {
@@ -82,6 +78,26 @@
       padding: 80px 20px 20px;
       width: 100%;
       box-sizing: border-box;
+      min-height: 100vh;
+    }
+    
+    .plan-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid;
+    }
+    
+    .plan-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15);
+    }
+    
+    .network-logo {
+      width: 24px;
+      height: 24px;
+      display: inline-block;
+      margin-right: 8px;
+      border-radius: 50%;
+      overflow: hidden;
     }
     
     .notification {
@@ -110,34 +126,47 @@
       background-color: #ef4444;
     }
     
-    .account-details {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.5s ease;
+    .notification.warning {
+      background-color: #f59e0b;
     }
     
-    .account-details.show {
-      max-height: 500px;
-    }
-    
-    .copy-btn {
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    
-    .copy-btn:hover {
-      transform: scale(1.05);
-      color: #7e22ce;
-    }
-    
-    .balance-display {
-      background: linear-gradient(135deg, #7e22ce 0%, #a855f7 100%);
-      color: white;
+    .balance-info {
+      background: #faf5ff;
       border-radius: 12px;
-      padding: 15px;
-      text-align: center;
+      padding: 12px 16px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #7e22ce;
+    }
+    
+    /* Animation for plan appearance */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    
+    .deposit-prompt {
+      background: #fffbeb;
+      border: 1px solid #f59e0b;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    .amount-required {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #7e22ce;
+      text-align: center;
+      margin: 15px 0;
+      padding: 10px;
+      background: #faf5ff;
+      border-radius: 8px;
+      display: none;
     }
   </style>
 </head>
@@ -154,11 +183,11 @@
       <i class="fas fa-home"></i>
       <span class="hidden md:inline ml-1">Home</span>
     </div>
-    <div class="nav-item" onclick="window.location.href='buy.html'">
+    <div class="nav-item active">
       <i class="fas fa-wifi"></i>
       <span class="hidden md:inline ml-1">Buy Data</span>
     </div>
-    <div class="nav-item active">
+    <div class="nav-item" onclick="window.location.href='deposit.html'">
       <i class="fas fa-money-bill-wave"></i>
       <span class="hidden md:inline ml-1">Deposit</span>
     </div>
@@ -168,187 +197,283 @@
     </div>
   </div>
 
-  <!-- Deposit Page Content -->
+  <!-- Buy Data Page Content -->
   <div class="page">
     <div class="card">
       <div class="p-6">
-        <h1 class="text-xl font-bold text-purple-650 mb-6 text-center"><i class="fas fa-money-bill-wave mr-2"></i>Deposit Funds</h1>
+        <h1 class="text-xl font-bold text-purple-650 mb-6 text-center"><i class="fas fa-wifi mr-2"></i>Buy Data</h1>
         
-        <!-- Balance Display -->
-        <div class="balance-display">
-          <div class="text-sm opacity-80">Your Current Balance</div>
-          <div id="user-balance" class="text-3xl font-bold">₦0</div>
-          <div class="text-xs opacity-80 mt-1">Minimum deposit: ₦500</div>
+        <!-- Balance Information -->
+        <div class="balance-info">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-medium text-purple-650">Your Balance:</span>
+            <span id="user-balance" class="font-bold text-purple-650">₦0.00</span>
+          </div>
+          <div class="text-xs text-purple-500 mt-1">Deposit funds to purchase data bundles</div>
+        </div>
+        
+        <!-- Amount Required Notification -->
+        <div id="amount-required" class="amount-required">
+          You need to deposit <span id="required-amount-text">₦0</span> to purchase this data plan
         </div>
         
         <div class="mb-6">
-          <label class="block text-sm font-medium text-purple-650 mb-3">Select Deposit Method:</label>
+          <label class="block text-sm font-medium text-purple-650 mb-3">Select Network:</label>
           <div class="grid grid-cols-2 gap-3">
-            <div class="method-option relative">
-              <input type="radio" name="deposit-method" id="method-bank" value="bank" class="hidden peer" checked>
-              <label for="method-bank" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-purple-550 peer-checked:bg-purple-50 transition-all duration-300">
-                <i class="fas fa-building text-purple-650 text-xl mb-1"></i>
-                <span class="mt-1 text-sm font-medium">Bank Transfer</span>
+            <div class="network-option relative">
+              <input type="radio" name="data-network" id="data-airtel" value="Airtel" class="hidden peer" data-network="airtel">
+              <label for="data-airtel" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-purple-550 peer-checked:bg-purple-50 transition-all duration-300">
+                <span class="network-logo bg-[#e21836]"></span>
+                <span class="mt-1 text-sm font-medium">Airtel</span>
               </label>
             </div>
-            <div class="method-option relative">
-              <input type="radio" name="deposit-method" id="method-crypto" value="crypto" class="hidden peer">
-              <label for="method-crypto" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-purple-550 peer-checked:bg-purple-50 transition-all duration-300">
-                <i class="fab fa-bitcoin text-purple-650 text-xl mb-1"></i>
-                <span class="mt-1 text-sm font-medium">Crypto</span>
+            <div class="network-option relative">
+              <input type="radio" name="data-network" id="data-mtn" value="MTN" class="hidden peer" data-network="mtn">
+              <label for="data-mtn" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-[#ffcc00] peer-checked:bg-yellow-50 transition-all duration-300">
+                <span class="network-logo bg-[#ffcc00]"></span>
+                <span class="mt-1 text-sm font-medium">MTN</span>
+              </label>
+            </div>
+            <div class="network-option relative">
+              <input type="radio" name="data-network" id="data-glo" value="Glo" class="hidden peer" data-network="glo">
+              <label for="data-glo" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-[#00a859] peer-checked:bg-green-50 transition-all duration-300">
+                <span class="network-logo bg-[#00a859]"></span>
+                <span class="mt-1 text-sm font-medium">Glo</span>
+              </label>
+            </div>
+            <div class="network-option relative">
+              <input type="radio" name="data-network" id="data-9mobile" value="9mobile" class="hidden peer" data-network="9mobile">
+              <label for="data-9mobile" class="flex flex-col items-center justify-center p-3 border-2 border-purple-200 rounded-lg cursor-pointer peer-checked:border-[#00a95c] peer-checked:bg-green-50 transition-all duration-300">
+                <span class="network-logo bg-[#00a95c]"></span>
+                <span class="mt-1 text-sm font-medium">9mobile</span>
               </label>
             </div>
           </div>
         </div>
         
         <div class="mb-6">
-          <label class="block text-sm font-medium text-purple-650 mb-1">Amount to Deposit (₦):</label>
-          <input type="number" id="deposit-amount" class="w-full px-3 py-2 border border-purple-300 rounded-md focus:ring-2 focus:ring-purple-350 focus:border-purple-350" placeholder="Enter amount" min="500" value="500">
-          <div class="text-xs text-purple-500 mt-1">Minimum deposit: ₦500</div>
+          <label class="block text-sm font-medium text-purple-650 mb-3">Select Data Plan:</label>
+          <div id="plans-container" class="space-y-3">
+            <p class="text-center text-purple-500 py-4">Select a network to view plans</p>
+          </div>
         </div>
         
-        <button id="continue-btn" onclick="showAccountDetails()" class="bg-purple-650 text-white px-4 py-3 rounded-lg w-full hover:bg-purple-700 transition-all duration-300 shadow-lg shadow-purple-350/40 hover:shadow-purple-450/40 mb-6">
-          Continue
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-purple-650 mb-1">Phone Number:</label>
+          <div class="flex">
+            <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-purple-300 bg-purple-100 text-purple-700 text-sm">
+              +234
+            </span>
+            <input type="tel" id="data-phone" class="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-md border-purple-300 border focus:ring-2 focus:ring-purple-350 focus:border-purple-350" placeholder="8012345678">
+          </div>
+        </div>
+        
+        <button onclick="validatePurchase()" class="bg-purple-650 text-white px-4 py-3 rounded-lg w-full hover:bg-purple-700 transition-all duration-300 shadow-lg shadow-purple-350/40 hover:shadow-purple-450/40">
+          <i class="fas fa-shopping-cart mr-2"></i> Purchase Now
         </button>
         
-        <!-- Account Details (Hidden by default) -->
-        <div id="account-details" class="account-details">
-          <div class="border-t border-purple-200 pt-4 mb-4"></div>
-          
-          <h2 class="text-lg font-bold text-purple-650 mb-4 text-center">Bank Transfer Details</h2>
-          
-          <div class="bg-purple-50 p-4 rounded-lg mb-4">
-            <div class="flex justify-between items-center mb-3">
-              <span class="font-medium text-purple-650">Bank Name:</span>
-              <div class="flex items-center">
-                <span id="bank-name" class="font-bold">Uprise Microfinance Bank</span>
-                <i class="fas fa-copy copy-btn ml-2 text-purple-550" onclick="copyToClipboard('bank-name')"></i>
+        <!-- Deposit Prompt -->
+        <div id="deposit-prompt" class="deposit-prompt">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <i class="fas fa-exclamation-triangle text-yellow-500 text-xl"></i>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-yellow-800">Insufficient Balance</h3>
+              <div class="mt-2 text-sm text-yellow-700">
+                <p>You need to deposit more funds to purchase this data plan.</p>
+              </div>
+              <div class="mt-4">
+                <button onclick="window.location.href='deposit.html'" class="bg-yellow-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-yellow-600 transition-all duration-300">
+                  Deposit Now
+                </button>
               </div>
             </div>
-            
-            <div class="flex justify-between items-center mb-3">
-              <span class="font-medium text-purple-650">Account Number:</span>
-              <div class="flex items-center">
-                <span id="account-number" class="font-bold">8123456789</span>
-                <i class="fas fa-copy copy-btn ml-2 text-purple-550" onclick="copyToClipboard('account-number')"></i>
-              </div>
-            </div>
-            
-            <div class="flex justify-between items-center mb-3">
-              <span class="font-medium text-purple-650">Account Name:</span>
-              <div class="flex items-center">
-                <span id="account-name" class="font-bold">Uprise Data Services</span>
-                <i class="fas fa-copy copy-btn ml-2 text-purple-550" onclick="copyToClipboard('account-name')"></i>
-              </div>
-            </div>
-          </div>
-          
-          <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <i class="fas fa-exclamation-circle text-yellow-500"></i>
-              </div>
-              <div class="ml-3">
-                <p class="text-sm text-yellow-700">
-                  <strong>Important:</strong> Use your registered name as reference when transferring. Funds will be credited within 15 minutes after transfer.
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="flex space-x-3">
-            <button onclick="markAsPaid()" class="bg-green-600 text-white px-4 py-2 rounded-lg flex-1 hover:bg-green-700 transition-all duration-300">
-              <i class="fas fa-check-circle mr-2"></i> I Have Paid
-            </button>
-            <button onclick="hideAccountDetails()" class="bg-gray-500 text-white px-4 py-2 rounded-lg flex-1 hover:bg-gray-600 transition-all duration-300">
-              <i class="fas fa-times mr-2"></i> Cancel
-            </button>
           </div>
         </div>
         
         <div class="text-center mt-4">
-          <p class="text-sm text-purple-600">Need help? <a href="#" class="text-purple-650 font-semibold">Contact support</a></p>
+          <p class="text-sm text-purple-600">Need funds? <a href="deposit.html" class="text-purple-650 font-semibold">Deposit here</a></p>
         </div>
       </div>
     </div>
   </div>
 
   <script>
+    // Data plans with different prices for each network
+    const dataPlans = {
+      Airtel: [
+        { id: "10GB-2200", name: "10GB", price: 2200, validity: "30 days", description: "Standard Plan" },
+        { id: "5GB-1350", name: "5GB", price: 1350, validity: "30 days", description: "Value Plan" },
+        { id: "3GB-950", name: "3GB", price: 950, validity: "14 days", description: "Budget Plan" },
+        { id: "1GB-550", name: "1GB", price: 550, validity: "7 days", description: "Weekly Plan" }
+      ],
+      MTN: [
+        { id: "10GB-2300", name: "10GB", price: 2300, validity: "30 days", description: "Standard Plan" },
+        { id: "5GB-1400", name: "5GB", price: 1400, validity: "30 days", description: "Value Plan" },
+        { id: "3GB-1000", name: "3GB", price: 1000, validity: "14 days", description: "Budget Plan" },
+        { id: "1GB-600", name: "1GB", price: 600, validity: "7 days", description: "Weekly Plan" }
+      ],
+      Glo: [
+        { id: "10GB-1500", name: "10GB", price: 1500, validity: "30 days", description: "Monthly Plan" },
+        { id: "5GB-1050", name: "5GB", price: 1050, validity: "30 days", description: "Value Plan" },
+        { id: "3GB-700", name: "3GB", price: 700, validity: "7 days", description: "Weekly Plan" },
+        { id: "1GB-350", name: "1GB", price: 350, validity: "7 days", description: "Budget Plan" }
+      ],
+      "9mobile": [
+        { id: "10GB-1500", name: "10GB", price: 1500, validity: "30 days", description: "Monthly Plan" },
+        { id: "5GB-1100", name: "5GB", price: 1100, validity: "30 days", description: "Value Plan" },
+        { id: "3GB-750", name: "3GB", price: 750, validity: "7 days", description: "Weekly Plan" },
+        { id: "1GB-400", name: "1GB", price: 400, validity: "7 days", description: "Budget Plan" }
+      ]
+    };
+
     // Initialize the application
     document.addEventListener('DOMContentLoaded', function() {
-      // Set initial balance to ₦0
-      document.getElementById('user-balance').textContent = '₦0';
-      
-      // Add input validation for the amount field
-      const amountInput = document.getElementById('deposit-amount');
-      amountInput.addEventListener('input', function() {
-        if (this.value < 500) {
-          this.setCustomValidity('Minimum deposit is ₦500');
-        } else {
-          this.setCustomValidity('');
-        }
+      // Setup network selection for data purchase
+      const networkRadios = document.querySelectorAll('input[name="data-network"]');
+      networkRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (this.checked) {
+            const selectedNetwork = this.value;
+            updateDataPlans(selectedNetwork);
+            // Hide amount required when changing network
+            document.getElementById('amount-required').style.display = 'none';
+          }
+        });
       });
+      
+      // Auto-select the first network by default
+      document.getElementById('data-airtel').checked = true;
+      updateDataPlans('Airtel');
+      
+      // Load user balance
+      updateUserBalance();
     });
 
-    function showAccountDetails() {
-      const amount = document.getElementById('deposit-amount').value;
-      const method = document.querySelector('input[name="deposit-method"]:checked').value;
+    function updateUserBalance() {
+      // In a real app, this would come from your backend or localStorage
+      // For this demo, we'll set the initial balance to ₦0
+      const demoBalance = 0;
+      document.getElementById('user-balance').textContent = `₦${demoBalance.toLocaleString()}`;
+      return demoBalance;
+    }
+
+    function updateDataPlans(network) {
+      const plansContainer = document.getElementById('plans-container');
+      const plans = dataPlans[network] || [];
       
-      // Validate amount
-      if (!amount || amount < 500) {
-        showNotification('Please enter at least ₦500 to deposit', 'error');
+      if (plans.length === 0) {
+        plansContainer.innerHTML = '<p class="text-center text-purple-500 py-4">No plans available for this network</p>';
         return;
       }
       
-      // Show account details with animation
-      const accountDetails = document.getElementById('account-details');
-      accountDetails.classList.add('show');
+      let plansHTML = '';
+      plans.forEach((plan, index) => {
+        let borderColor = 'border-purple-450';
+        let bgColor = 'bg-purple-50';
+        
+        // Different colors for different networks
+        if (network === 'MTN') {
+          borderColor = 'border-yellow-400';
+          bgColor = 'bg-yellow-50';
+        } else if (network === 'Glo') {
+          borderColor = 'border-green-500';
+          bgColor = 'bg-green-50';
+        } else if (network === '9mobile') {
+          borderColor = 'border-green-600';
+          bgColor = 'bg-green-50';
+        }
+        
+        plansHTML += `
+          <div class="plan-option fade-in" style="animation-delay: ${index * 0.1}s">
+            <input type="radio" name="data-plan" id="${plan.id}" value="${plan.id}" class="hidden peer" data-price="${plan.price}">
+            <label for="${plan.id}" class="plan-card block p-4 border border-purple-200 rounded-lg cursor-pointer peer-checked:${borderColor} peer-checked:ring-2 peer-checked:ring-purple-350 peer-checked:${bgColor}">
+              <div class="flex justify-between items-center">
+                <div>
+                  <span class="font-bold text-lg text-purple-650">${plan.name}</span>
+                  <span class="text-sm text-purple-600 ml-2">${plan.description}</span>
+                </div>
+                <span class="font-bold text-purple-650">₦${plan.price.toLocaleString()}</span>
+              </div>
+              <div class="text-sm text-purple-500 mt-1">Validity: ${plan.validity}</div>
+            </label>
+          </div>
+        `;
+      });
       
-      // Scroll to account details
-      accountDetails.scrollIntoView({ behavior: 'smooth' });
+      plansContainer.innerHTML = plansHTML;
       
-      // Change button text
-      document.getElementById('continue-btn').textContent = 'Change Amount';
-      document.getElementById('continue-btn').onclick = hideAccountDetails;
-      
-      showNotification(`Please transfer exactly ₦${amount} to the account details below`, 'success');
-    }
-    
-    function hideAccountDetails() {
-      const accountDetails = document.getElementById('account-details');
-      accountDetails.classList.remove('show');
-      
-      // Reset button
-      document.getElementById('continue-btn').textContent = 'Continue';
-      document.getElementById('continue-btn').onclick = showAccountDetails;
-    }
-
-    function copyToClipboard(elementId) {
-      const element = document.getElementById(elementId);
-      const text = element.textContent;
-      
-      navigator.clipboard.writeText(text).then(() => {
-        showNotification('Copied to clipboard!', 'success');
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-        showNotification('Failed to copy to clipboard', 'error');
+      // Add event listeners to plan selections
+      const planRadios = document.querySelectorAll('input[name="data-plan"]');
+      planRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          // When a plan is selected, show how much they need to deposit
+          const price = parseInt(this.getAttribute('data-price'));
+          const userBalance = updateUserBalance();
+          const amountNeeded = price - userBalance;
+          
+          if (amountNeeded > 0) {
+            document.getElementById('required-amount-text').textContent = `₦${amountNeeded.toLocaleString()}`;
+            document.getElementById('amount-required').style.display = 'block';
+          } else {
+            document.getElementById('amount-required').style.display = 'none';
+          }
+          
+          // Hide deposit prompt when a new plan is selected
+          document.getElementById('deposit-prompt').style.display = 'none';
+        });
       });
     }
+
+    function validatePurchase() {
+      const network = document.querySelector('input[name="data-network"]:checked');
+      const plan = document.querySelector('input[name="data-plan"]:checked');
+      const phone = document.getElementById('data-phone').value.trim();
+      
+      if (!network || !plan || !phone) {
+        showNotification('Please select network, plan and enter phone number', 'error');
+        return;
+      }
+      
+      // Validate phone number format
+      if (!/^[0-9]{10}$/.test(phone)) {
+        showNotification('Please enter a valid 10-digit phone number', 'error');
+        return;
+      }
+      
+      const [gb, priceStr] = plan.value.split("-");
+      const price = parseInt(priceStr);
+      const userBalance = updateUserBalance(); // Get current balance
+      
+      // Check if user has sufficient balance
+      if (userBalance < price) {
+        // Show deposit prompt with required amount
+        document.getElementById('required-amount-text').textContent = `₦${(price - userBalance).toLocaleString()}`;
+        document.getElementById('amount-required').style.display = 'block';
+        document.getElementById('deposit-prompt').style.display = 'block';
+        
+        // Scroll to deposit prompt
+        document.getElementById('deposit-prompt').scrollIntoView({ behavior: 'smooth' });
+        
+        showNotification(`Insufficient balance. You need ₦${(price - userBalance).toLocaleString()} more`, 'warning');
+        return;
+      }
+      
+      // If balance is sufficient, process purchase
+      processPurchase(network.value, gb, price, phone);
+    }
     
-    function markAsPaid() {
-      const amount = document.getElementById('deposit-amount').value;
+    function processPurchase(network, plan, price, phone) {
+      // Simulate purchase processing
+      showNotification(`Your ${plan} ${network} data plan for ${phone} is being processed!`, 'success');
       
-      // Update balance (in a real app, this would come from your backend)
-      const currentBalance = 0; // Start from ₦0
-      const newBalance = currentBalance + parseInt(amount);
-      document.getElementById('user-balance').textContent = `₦${newBalance.toLocaleString()}`;
-      
-      showNotification(`Your deposit of ₦${amount} is being processed. It will be credited within 15 minutes.`, 'success');
-      
-      // Reset form after 2 seconds
+      // Reset form after successful purchase
       setTimeout(() => {
-        hideAccountDetails();
-        document.getElementById('deposit-amount').value = '500';
+        document.querySelector('input[name="data-plan"]:checked').checked = false;
+        document.getElementById('data-phone').value = '';
+        document.getElementById('deposit-prompt').style.display = 'none';
+        document.getElementById('amount-required').style.display = 'none';
       }, 2000);
     }
 
@@ -356,7 +481,13 @@
       const notification = document.getElementById('notification');
       const notificationText = document.getElementById('notification-text');
       
-      notificationText.textContent = message;
+      // Set appropriate icon based on type
+      let icon = 'fa-check-circle';
+      if (type === 'error') icon = 'fa-exclamation-circle';
+      if (type === 'warning') icon = 'fa-exclamation-triangle';
+      
+      notification.innerHTML = `<i class="fas ${icon} mr-2"></i> <span id="notification-text">${message}</span>`;
+      
       notification.className = `notification ${type} show`;
       
       setTimeout(() => {
